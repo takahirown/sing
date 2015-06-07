@@ -19,7 +19,7 @@ class Sing_String
      */
     public static function exist($target, $needle, $offset = 0)
     {
-        return (strpos($target, $needle, $offset) === false);
+        return (strpos($target, $needle, $offset) !== false);
     }
 
     /**
