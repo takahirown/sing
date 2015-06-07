@@ -1,0 +1,19 @@
+{
+    "index": {
+
+        "email": [
+            "ID",
+            "NotEmpty|EmailAddress|Service_Signup::checkAlreadyRegistered"
+        ],
+
+        "password": [
+            "パスワード",
+            "NotEmpty|StringLength[min:7,max:12]"
+        ],
+
+        "confirmedPassword": [
+            "パスワード確認",
+            "NotEmpty|StringLength[min:6,max:12]"
+        ]
+    }
+}

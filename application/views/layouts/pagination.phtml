@@ -1,0 +1,49 @@
+
+
+    <div>
+    <?php echo '全'.$this->totalItemCount.'件'; ?>&nbsp;
+    <?php if ($this->pageCount > 1): ?>
+
+      <!-- 先頭ページへのリンク -->
+      <a href="<?php echo $this->url(array('page' => $this->first)); ?>">
+          &lt; 先頭
+      </a> |
+
+      <!-- 前ページへのリンク -->
+      <?php if (isset($this->previous)): ?>
+        <a href="<?php echo $this->url(array('page' => $this->previous)); ?>">
+          &lt; 前へ
+        </a> |
+      <?php else: ?>
+        <span>&lt; 前へ</span> |
+      <?php endif; ?>
+
+      <!-- ページ番号のリンク -->
+      <?php foreach ($this->pagesInRange as $page): ?>
+        <?php if ($page != $this->current): ?>
+          <a href="<?php echo $this->url(array('page' => $page)); ?>">
+              <?php echo $page; ?>
+          </a> |
+        <?php else: ?>
+          <?php echo $page; ?> |
+        <?php endif; ?>
+      <?php endforeach; ?>
+
+      <!-- 次ページへのリンク -->
+      <?php if (isset($this->next)): ?>
+        <a href="<?php echo $this->url(array('page' => $this->next)); ?>">
+          次へ &gt;
+        </a>
+      <?php else: ?>
+        <span>次へ &gt;</span>
+      <?php endif; ?>
+
+
+      <!-- 最後ページへのリンク -->
+      <a href="<?php echo $this->url(array('page' => $this->last)); ?>">
+        最後 &gt;
+      </a>
+
+    <?php endif; ?>
+    </div>
+

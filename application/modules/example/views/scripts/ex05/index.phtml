@@ -1,0 +1,177 @@
+<?php $this->notices()?>
+<div id="main" role="main">
+    <h3 class="page-header">Ex05.バリデーション</h3>
+    <p>Singでは入力が要件を満たしているかどうか調べるためのバリデートルールに JSON を利用して実装します。バリデーションの実施は
+    <em>Sing_Controller_Action::validate()</em> で開始し、
+    JSON のルールファイルは configs/validation 配下にモジュール名、コントローラ名を付けて配置します。モジュールがデフォルトモジュールの場合は省略型で配置します。
+    <em>例1、2</em>は <em>Hoge</em> モジュールのサンプル、<em>例3、4</em>はデフォルトモジュールのサンプルです。</p>
+
+    <span>例1 modules/Hoge/controllers/FugaController.php</span><br>
+    <div class="highlight">
+        <code><span style="color: #000000">
+        &nbsp;<span style="color: #0000CC">&lt;?php
+        <br /></span><span style="color: #006600">class&nbsp;</span><span style="color: #0000CC">Hoge_FugaController&nbsp;</span><span style="color: #006600">extends&nbsp;</span><span style="color: #0000CC">Sing_Controller_Action
+        <br /></span><span style="color: #006600">{
+        <br />&nbsp;&nbsp;&nbsp;&nbsp;public&nbsp;function&nbsp;</span><span style="color: #0000CC">indexAction</span><span style="color: #006600">()
+        <br />&nbsp;&nbsp;&nbsp;&nbsp;{
+        <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;(</span><span style="color: #0000CC">$this</span><span style="color: #006600">-&gt;</span><span style="color: #0000CC">validate</span><span style="color: #006600">()&nbsp;==&nbsp;<span style="color: #006600">false</span>)&nbsp;{
+        <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000CC">$this</span><span style="color: #006600">-&gt;</span><span style="color: #0000CC">addNotice</span><span style="color: #006600">(</span><span style="color: #0000CC">SG_NOTICE_ERROR</span><span style="color: #006600">,&nbsp;</span><span style="color: #CC0000">'入力された値に誤りがあります。'</span><span style="color: #006600">);
+        <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return;
+        <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+        <br />&nbsp;&nbsp;&nbsp;&nbsp;}
+        <br />}&nbsp;</span>
+        </span>
+        </code>
+    </div>
+
+    <span>例2 configs/validation/hoge/fuga.json</span><br>
+    <div class="highlight">
+        <code><span style="color: #0000CC">
+        {
+        <br />&nbsp;&nbsp;&nbsp;&nbsp;"index":&nbsp;{
+        <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"email":&nbsp;["ID",&nbsp;"NotEmpty|EmailAddress|Service_SignupEmailValidator::doCheck[100,abc]"],
+        <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"password":&nbsp;["パスワード",&nbsp;"NotEmpty|StringLength[min:6,max:12][6,12]"],
+        <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"confirmedPassword":&nbsp;["パスワード確認",&nbsp;"NotEmpty|StringLength[min:6,max:12][6,12]"]
+        <br />&nbsp;&nbsp;&nbsp;&nbsp;}
+        <br />}</span>
+        </code>
+    </div>
+
+    <span>例3 controllers/PiyoController.php</span><br>
+    <div class="highlight">
+        <code><span style="color: #000000">
+        &nbsp;<span style="color: #0000CC">&lt;?php
+        <br /></span><span style="color: #006600">class&nbsp;</span><span style="color: #0000CC">PiyoController&nbsp;</span><span style="color: #006600">extends&nbsp;</span><span style="color: #0000CC">Sing_Controller_Action
+        <br /></span><span style="color: #006600">{
+        <br />&nbsp;&nbsp;&nbsp;&nbsp;public&nbsp;function&nbsp;</span><span style="color: #0000CC">saveAction</span><span style="color: #006600">()
+        <br />&nbsp;&nbsp;&nbsp;&nbsp;{
+        <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;(</span><span style="color: #0000CC">$this</span><span style="color: #006600">-&gt;</span><span style="color: #0000CC">validate</span><span style="color: #006600">()&nbsp;==&nbsp;<span style="color: #006600">false</span>)&nbsp;{
+        <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000CC">$this</span><span style="color: #006600">-&gt;</span><span style="color: #0000CC">addNotice</span><span style="color: #006600">(</span><span style="color: #0000CC">SG_NOTICE_ERROR</span><span style="color: #006600">,&nbsp;</span><span style="color: #CC0000">'入力された値に誤りがあります。'</span><span style="color: #006600">);
+        <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return;
+        <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+        <br />&nbsp;&nbsp;&nbsp;&nbsp;}
+        <br />}&nbsp;</span>
+        </span>
+        </code>
+    </div>
+
+    <span>例4 configs/validation/piyo.json</span><br>
+    <div class="highlight">
+        <code><span style="color: #0000CC">
+        {
+        <br />&nbsp;&nbsp;&nbsp;&nbsp;"save":&nbsp;{
+        <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"name":&nbsp;["氏名",&nbsp;"NotEmpty|StringLength[min:6,max:12][6,12]"],
+        <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"name_kana":&nbsp;["氏名カナ",&nbsp;"NotEmpty|StringLength[min:12,max:24][12,24]"]
+        <br />&nbsp;&nbsp;&nbsp;&nbsp;}
+        <br />}</span>
+        </code>
+    </div>
+
+    <p>ルールファイルの記述は、コントローラのアクションメソッド毎でパラメータ単位に定義します。
+    <em>例4</em>の場合は、<em>PiyoController</em> の <em>save</em> メソッド用のバリデーションルールで、入力パラメータが <em>name</em> と
+    <em>name_kana</em> のルールを定義しています。バリデーションルールは画面表示名と、Zend のバリデーションクラスのベースネーム(
+    <em>Zend_Validate</em> 名前空間における相対的な名前)を配列型で定義します。バリデーションクラスを複数指定する場合はパイプで区切って定義します。</p>
+
+    <h4>バリデーションルールの基本的な定義方法</h4>
+
+    <p>ルールファイルはコントローラ毎に作成するイメージで、アクションメソッド毎の連想配列で記載します。連想配列のキーは入力パラメータのパラメータ名、値は表示名とバリデーションルールの配列になります。バリデーションルールはバリデーションクラスをパイプ区切りで定義できます。</p>
+
+    <p>例えば、必須チェックを行いたいような場合は <em>Zend_Validate_NotEmpty</em> で検証するためベースネームの <em>NotEmpty</em> を指定します。バリデーションクラスのオプションは下記の様に定義して下さい。</p>
+
+    <ul>
+        <li>Zend_Validate_StringLength<br />StringLength[min:4,max:8]</li>
+        <li>Zend_Validate_GreaterThan<br />GreaterThan[min:5]</li>
+        <li>Zend_Validate_LessThan<br />LessThan[max:10]</li>
+    </ul>
+
+    <h4>バリデーションルールに独自のクラスを利用する方法</h4>
+
+    <p>Zend のバリデーションクラスではなく独自のバリデーション処理を行う場合は、PHP の素の静的クラスを用意してルールファイルに定義して下さい。</p>
+
+    <span>例5 configs/validation/hoge/fuga.json</span><br>
+    <div class="highlight">
+        <code><span style="color: #0000CC">
+        {
+        <br />&nbsp;&nbsp;&nbsp;&nbsp;"delete":&nbsp;{
+        <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"email":&nbsp;["メールアドレス",&nbsp;"NotEmpty|Service_SignupValidator::exist[データベース]"]
+        <br />&nbsp;&nbsp;&nbsp;&nbsp;}
+        <br />}</span>
+        </code>
+    </div>
+
+    <span>例6 services/SignupValidator.php</span><br>
+    <div class="highlight">
+        <code><span style="color: #000000">
+        <span style="color: #0000CC">&lt;?php
+        <br />
+        <br /></span><span style="color: #006600">class&nbsp;</span><span style="color: #0000CC">Service_SignupValidator
+        <br /></span><span style="color: #006600">{
+        <br />&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #FF9900">/**
+        <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*&nbsp;@param&nbsp;string&nbsp;$value&nbsp;-&nbsp;パラメータ値
+        <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*&nbsp;@param&nbsp;array&nbsp;$params&nbsp;-&nbsp;すべてのリクエストパラメータ
+        <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*&nbsp;@return&nbsp;boolean&nbsp;TRUE:チェックが正常
+        <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*/
+        <br />&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #006600">public&nbsp;static&nbsp;function&nbsp;</span><span style="color: #0000CC">exist</span><span style="color: #006600">(</span><span style="color: #0000CC">$value</span><span style="color: #006600">,&nbsp;</span><span style="color: #0000CC">$params</span><span style="color: #006600">)
+        <br />&nbsp;&nbsp;&nbsp;&nbsp;{
+        <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000CC">$model&nbsp;</span><span style="color: #006600">=&nbsp;new&nbsp;</span><span style="color: #0000CC">Model_ExampleEx05</span><span style="color: #006600">();
+        <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;(</span><span style="color: #0000CC">$model</span><span style="color: #006600">-&gt;</span><span style="color: #0000CC">findByEmail</span><span style="color: #006600">(<span style="color: #0000CC">$value</span>))&nbsp;{
+        <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;</span><span style="color: #0000CC">true</span><span style="color: #006600">;
+        <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+        <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;</span><span style="color: #0000CC">false</span><span style="color: #006600">;
+        <br />&nbsp;&nbsp;&nbsp;&nbsp;}
+        <br />}</span>
+        </span>
+        </code>
+    </div>
+
+    <p><em>例5、6</em>では <em>Hoge_FugaController::deleteAction()</em> の email パラメータを下記順番でチェックを実施します。</p>
+
+    <ol>
+        <li>値の存在チェック</li>
+        <li><em>Service_SignupValidator::exist()</em> を実行してDB上でデータの存在チェック</li>
+    </ol>
+
+    <p>独自クラスを記述する際は、POJO(POPO？)でクラス定義し、実行メソッドは <em>static</em> としてください。クラス名、メソッド名のルールはありません。メソッドの引数は必須ではありませんが、
+    Singは第1引数にパラメータ値、第2引数にすべてのリクエストパラメータを渡すので必要な場合は定義して下さい。 </p>
+
+    <h4>エラーメッセージの設定方法</h4>
+
+    <p>バリデーションチェックを実施した結果、エラーとなった場合に出力するエラーメッセージはシステムで利用するメッセージファイル(message.言語.php)に定義します。</p>
+
+    <span>例7 configs/message.ja.php</span><br>
+    <div class="highlight">
+        <code><span style="color: #000000">
+        <span style="color: #0000CC">&lt;?php
+        <br />
+        <br /></span><span style="color: #006600">return&nbsp;array(
+        <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #FF9900">//&nbsp;バリデーションメッセージ
+        <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #CC0000">'EmailAddress'&nbsp;</span><span style="color: #006600">=&gt;&nbsp;</span><span style="color: #CC0000">'メールアドレスの形式エラーです'</span><span style="color: #006600">,
+        <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #CC0000">'StringLength'&nbsp;</span><span style="color: #006600">=&gt;&nbsp;</span><span style="color: #CC0000">'%sは%d文字以上%d文字以内です'</span><span style="color: #006600">,
+        <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #CC0000">'StringLengthMax'&nbsp;</span><span style="color: #006600">=&gt;&nbsp;</span><span style="color: #CC0000">'%sは%d文字以内です'</span><span style="color: #006600">,
+        <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #CC0000">'NotEmpty'&nbsp;</span><span style="color: #006600">=&gt;&nbsp;</span><span style="color: #CC0000">'%sを入力してください'</span><span style="color: #006600">,
+        <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #CC0000">'NotEmptySelect'&nbsp;</span><span style="color: #006600">=&gt;&nbsp;</span><span style="color: #CC0000">'%sを選択してください'</span><span style="color: #006600">,
+        <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #CC0000">'Alnum'&nbsp;</span><span style="color: #006600">=&gt;&nbsp;</span><span style="color: #CC0000">'%sは英数字のみで入力してください'</span><span style="color: #006600">,
+        <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #CC0000">'Alpha'&nbsp;</span><span style="color: #006600">=&gt;&nbsp;</span><span style="color: #CC0000">'%sは英字のみで入力してください'</span><span style="color: #006600">,
+        <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #CC0000">'Digits'&nbsp;</span><span style="color: #006600">=&gt;&nbsp;</span><span style="color: #CC0000">'%sは数字のみで入力してください'</span><span style="color: #006600">,
+        <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #CC0000">'Date'&nbsp;</span><span style="color: #006600">=&gt;&nbsp;</span><span style="color: #CC0000">'%sはYYYY-MM-DD形式で入力してください'</span><span style="color: #006600">,
+        <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #CC0000">'Float'&nbsp;</span><span style="color: #006600">=&gt;&nbsp;</span><span style="color: #CC0000">'%sは浮動小数点値で入力してください'</span><span style="color: #006600">,
+        <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #CC0000">'Int'&nbsp;</span><span style="color: #006600">=&gt;&nbsp;</span><span style="color: #CC0000">'%sは整数値で入力してください'</span><span style="color: #006600">,
+        <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #CC0000">'Ip'&nbsp;</span><span style="color: #006600">=&gt;&nbsp;</span><span style="color: #CC0000">'%sはIPアドレス形式で入力してください'</span><span style="color: #006600">,
+        <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #CC0000">'Hostname'&nbsp;</span><span style="color: #006600">=&gt;&nbsp;</span><span style="color: #CC0000">'%sはホストネームで入力してください'</span><span style="color: #006600">,
+        <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #CC0000">'GreaterThan'&nbsp;</span><span style="color: #006600">=&gt;&nbsp;</span><span style="color: #CC0000">'%sは%dより大きい値で入力してください'</span><span style="color: #006600">,
+        <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #CC0000">'LessThan'&nbsp;</span><span style="color: #006600">=&gt;&nbsp;</span><span style="color: #CC0000">'%sは%dより小さい値で入力してください'</span><span style="color: #006600">,
+        <br />
+        <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #FF9900">//&nbsp;独自クラスのバリデーションメッセージ
+        <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #CC0000">'Service_SignupValidator::exist'&nbsp;</span><span style="color: #006600">=&gt;&nbsp;</span><span style="color: #CC0000">'%sは%sに存在していません'</span><span style="color: #006600">,
+        <br />);</span>
+        </span>
+        </code>
+    </div>
+
+    <p>メッセージはバリデーションルールで指定したベースネーム及び独自クラスをキーに、値にメッセージを定義した PHP の連想配列で定義します。メッセージには置き換え設定でき、
+    <em>%s</em>が文字列、<em>%d</em>が整数として置き換え可能です。他にも指定可能です、<em>sprintf()</em> のドキュメントを参照してください。置き換えたい値はルールのバリデーションクラスの後ろに <em>[]</em> で括り記述します。複数ある場合はカンマで区切って記述して下さい。</p>
+
+    <div class="btn-area">
+        <a href="/example/" class="btn btn-default">用例に戻る</a>
+    </div>
+</div>

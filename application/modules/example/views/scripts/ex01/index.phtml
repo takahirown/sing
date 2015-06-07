@@ -1,0 +1,90 @@
+<?php $this->notices()?>
+<div id="main" role="main">
+    <h3 class="page-header">Ex01.トークンを利用したCSRF（クロスサイトリクエストフォージェリ）対策</h3>
+
+    <p>サイトの意図しないリクエストによる攻撃に対して、Singは遷移元のページが正規ページかどうかをチェックするトークンの仕組みを提供します。
+    <em>isSecurePost()</em> でPOSTリクエストの有無、トークンの突き合わせを実施し、問題がない場合に TRUE を返します。
+    POSTリクエストがない場合は FALSE、トークンの突き合わせで不正の場合は <em>Sing_Controller_Exception</em> をスローします。</p>
+
+    <p>トークンは <em>Sing_Controller_Action::postDispatch()</em> 内でセッションに上書き保存しています。ビュースクリプトにトークンを埋め込む場合は
+    <em>secureToken()</em> を form タグ内に記述してください。トークン検査が必要ない場合は
+    <em>Sing_Controller_Action::isSecurePost()</em> の代わりに <em>Sing_Controller_Action::isPost()</em> を実施してください。</p>
+
+    <span>例1 IndexContoller.php</span><br>
+    <div class="highlight">
+        <code><span style="color: #000000">
+        <span style="color: #0000CC">&lt;?php
+        <br /><span style="color: #006600">class&nbsp;</span><span style="color: #0000CC">IndexController&nbsp;</span><span style="color: #006600">extends&nbsp;</span><span style="color: #0000CC">Sing_Controller_Action
+        <br /></span><span style="color: #006600">{
+        <br />&nbsp;&nbsp;&nbsp;&nbsp;public&nbsp;function&nbsp;</span><span style="color: #0000CC">indexAction</span><span style="color: #006600">()
+        <br />&nbsp;&nbsp;&nbsp;&nbsp;{
+        <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;(</span><span style="color: #0000CC">$this</span><span style="color: #006600">-&gt;</span><span style="color: #0000CC">isSecurePost</span><span style="color: #006600">())&nbsp;{
+        <br />&nbsp;&nbsp;&nbsp;&nbsp;
+        <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #FF9900">//&nbsp;ここにトークンが正しい場合のPOSTリクエスト処理を記述
+        <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;POSTリクエストがあってもトークンが不正な場合は&nbsp;Exception&nbsp;がスローされます
+        <br />&nbsp;&nbsp;&nbsp;&nbsp;
+        <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #006600">return;
+        <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+        <br />&nbsp;&nbsp;&nbsp;&nbsp;
+        <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #FF9900">//&nbsp;ここにPOSTリクエストが無い場合の処理を記述（GETリクエスト、主に画面初期表示を想定）
+        <br />&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #006600">}
+        <br />}</span>
+        </span>
+        </code>
+    </div>
+
+    <span>例2 index.phtml</span><br>
+    <div class="highlight">
+        <code><span style="color: #000000">
+        &lt;form&nbsp;action="/"&nbsp;method="post"&gt;
+        <br />&nbsp;&nbsp;&nbsp;&nbsp;&lt;button&nbsp;class="btn&nbsp;btn-default"&nbsp;name="submit"&nbsp;value="search"&gt;検索する&lt;/button&gt;
+        <br />&nbsp;&nbsp;&nbsp;&nbsp;&lt;button&nbsp;class="btn&nbsp;btn-default"&nbsp;name="submit"&nbsp;value="register"&gt;登録する&lt;/button&gt;
+        <br />&nbsp;&nbsp;&nbsp;&nbsp;&lt;button&nbsp;class="btn&nbsp;btn-default"&nbsp;name="submit"&nbsp;value="delete"&gt;削除する&lt;/button&gt;
+        <br />&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #0000CC">&lt;?php&nbsp;$this</span><span style="color: #006600">-&gt;</span><span style="color: #0000CC">secureToken</span><span style="color: #006600">()</span><span style="color: #0000CC">?&gt;
+        <br /></span>&lt;/form&gt;</span>
+        </code>
+    </div>
+
+    <p>ボタンが複数ある様な場合は上記の通り name 値を合わせ、value 値にボタン毎の値をセットしてください。
+    <br /><em>isSecurePost()</em> の引数を指定してボタン押下イベントを制御することができます。</p>
+
+    <span>例3 IndexContoller.php</span><br>
+    <div class="highlight">
+        <code><span style="color: #000000">
+        <span style="color: #0000CC">&lt;?php
+        <br /></span><span style="color: #006600">class&nbsp;</span><span style="color: #0000CC">IndexController&nbsp;</span><span style="color: #006600">extends&nbsp;</span><span style="color: #0000CC">Sing_Controller_Action
+        <br /></span><span style="color: #006600">{
+        <br />&nbsp;&nbsp;&nbsp;&nbsp;public&nbsp;function&nbsp;</span><span style="color: #0000CC">indexAction</span><span style="color: #006600">()
+        <br />&nbsp;&nbsp;&nbsp;&nbsp;{
+        <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;(</span><span style="color: #0000CC">$this</span><span style="color: #006600">-&gt;</span><span style="color: #0000CC">isSecurePost</span><span style="color: #006600">(</span><span style="color: #CC0000">'submit'</span><span style="color: #006600">,&nbsp;</span><span style="color: #CC0000">'search'</span><span style="color: #006600">))&nbsp;{
+        <br />
+        <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #FF9900">//&nbsp;ここにトークンが正しい場合の「検索する」POSTリクエスト処理を記述
+        <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;POSTリクエストがあってもトークンが不正な場合は&nbsp;Exception&nbsp;がスローされます
+        <br />
+        <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #006600">return;
+        <br />
+        <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}&nbsp;elseif&nbsp;(</span><span style="color: #0000CC">$this</span><span style="color: #006600">-&gt;</span><span style="color: #0000CC">isSecurePost</span><span style="color: #006600">(</span><span style="color: #CC0000">'submit'</span><span style="color: #006600">,&nbsp;</span><span style="color: #CC0000">'register'</span><span style="color: #006600">))&nbsp;{
+        <br />&nbsp;&nbsp;&nbsp;&nbsp;
+        <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #FF9900">//&nbsp;ここにトークンが正しい場合の「登録する」POSTリクエスト処理を記述
+        <br />&nbsp;&nbsp;&nbsp;&nbsp;
+        <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #006600">return;
+        <br />
+        <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}&nbsp;elseif&nbsp;(</span><span style="color: #0000CC">$this</span><span style="color: #006600">-&gt;</span><span style="color: #0000CC">isSecurePost</span><span style="color: #006600">(</span><span style="color: #CC0000">'submit'</span><span style="color: #006600">,&nbsp;</span><span style="color: #CC0000">'delete'</span><span style="color: #006600">))&nbsp;{
+        <br />
+        <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #FF9900">//&nbsp;ここにトークンが正しい場合の「削除する」POSTリクエスト処理を記述
+        <br />&nbsp;&nbsp;&nbsp;&nbsp;
+        <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #006600">return;
+        <br />
+        <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+        <br />&nbsp;&nbsp;&nbsp;&nbsp;
+        <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #FF9900">//&nbsp;ここにPOSTリクエストが無い場合の処理を記述（GETリクエスト、主に画面初期表示を想定）
+        <br />&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #006600">}
+        <br />}</span>
+        </span>
+        </code>
+    </div>
+
+    <div class="btn-area">
+        <a href="/example/" class="btn btn-default">用例に戻る</a>
+    </div>
+</div>

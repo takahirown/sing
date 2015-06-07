@@ -1,0 +1,31 @@
+
+    <h2>Login</h2>
+    <?php $this->notices()?>
+    <div id="main" role="main">
+        <form class="form-horizontal" method="post" action="/login/" accept-charset="UTF-8" role="form">
+            <div class="form-group">
+                <label class="col-sm-3 control-label" for="email">Email</label>
+                <div class="col-sm-4">
+                    <input id="email" class="form-control" type="text" autocomplete="off" value="<?php $this->param('email')?>" name="email" placeholder="aaa@bbb.com">
+                    <?php $this->error('email')?>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label" for="password">Password</label>
+                <div class="col-sm-4">
+                    <input id="password" class="form-control" type="password" autocomplete="off" value="<?php $this->param('password')?>" name="password">
+                    <?php $this->error('password')?>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label" for="password">&nbsp;</label>
+                <div class="col-sm-9">
+                    <span><?php $this->multiOptions('rememberMe', SG_CHECKBOX)?></span>
+                    <span><a class="btn btn-default" href="/forgotpassword/">Forgot your password?</a></span>
+                </div>
+
+            </div>
+
+            <button class="btn btn-default" type="submit" name="submit" value="login">ログイン</button>
+        </form>
+    </div>

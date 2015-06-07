@@ -1,0 +1,39 @@
+<?php $this->notices()?>
+<div id="main" role="main">
+    <h3 class="page-header">Ex02.モデルオブジェクトの自動生成</h3>
+
+    <p>コントローラでモデルオブジェクトを利用する際は new 演算子でモデルを生成しなくて大丈夫です。コントローラのインスタンスプロパティに
+    <em>model</em> という名前が見つかればSingが自動でモデルを見つけインスタンスを生成します。</p>
+
+    <span>例1 SampleController.php</span><br>
+    <div class="highlight">
+        <code><span style="color: #000000">
+        <span style="color: #0000CC">&lt;?php
+        <br /></span><span style="color: #006600">class&nbsp;</span><span style="color: #0000CC">Example_SampleController&nbsp;</span><span style="color: #006600">extends&nbsp;</span><span style="color: #0000CC">Sing_Controller_Action
+        <br /></span><span style="color: #006600">{
+        <br />&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #FF9900">/**
+        <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*&nbsp;@var&nbsp;Model_ExampleSample
+        <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*/
+        <br />&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #006600">protected&nbsp;</span><span style="color: #0000CC">$model</span><span style="color: #006600">;
+        <br />
+        <br />&nbsp;&nbsp;&nbsp;&nbsp;public&nbsp;function&nbsp;</span><span style="color: #0000CC">indexAction</span><span style="color: #006600">()
+        <br />&nbsp;&nbsp;&nbsp;&nbsp;{
+        <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000CC">var_dump</span><span style="color: #006600">(</span><span style="color: #0000CC">$this</span><span style="color: #006600">-&gt;</span><span style="color: #0000CC">model</span><span style="color: #006600">);&nbsp;&nbsp;<span style="color: #FF9900">//object(Model_ExampleSample)</span>
+        <br />&nbsp;&nbsp;&nbsp;&nbsp;}
+        <br />}</span>
+        </span>
+        </code>
+    </div>
+
+    <p>モデル名のルールは "Model_" + モジュール名 + コントローラ名です。デフォルトモジュールは省略が前提です。
+    <br />下記にコントローラ名から自動生成するモデル名のサンプルを記述します。</p>
+    <ul>
+        <li>モジュール：デフォルト、コントローラ：IndexController<br />生成するモデル：Model_Index</li>
+        <li>モジュール：Admin、コントローラ：Admin_MemberController<br />生成するモデル：Model_AdminMember</li>
+        <li>モジュール：Api、コントローラ：Api_IndexController<br />生成するモデル：Model_ApiIndex</li>
+    </ul>
+
+    <div class="btn-area">
+        <a href="/example/" class="btn btn-default">用例に戻る</a>
+    </div>
+</div>

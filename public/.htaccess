@@ -1,0 +1,5 @@
+RewriteEngine on
+RewriteRule !\.(woff|ttf|mp4|js|ico|gif|jpe?g|png|css|html|apk|swf)$ index.php
+
+RewriteCond %{REQUEST_URI} ^/api_d
+RewriteRule / index.php

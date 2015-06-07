@@ -1,0 +1,37 @@
+<?php $this->notices()?>
+
+<div id="main" role="main">
+    <form class="form-horizontal" method="post" action="" role="form">
+
+        <h3 class="page-header">内容をご確認のうえ、登録を確定してください。</h3>
+        <p>ご本人様情報・勤務先情報を変更する場合は、「変更する」ボタンを押し、変更ページにてお手続きください。詳細ページのレイアウト・デザイン。</p>
+
+        <h4 id="grid-intro">ご登録内容</h4>
+        <div class="mainDetail-form">
+            <dl class="formInput-box">
+                <dt class="formInput-title">ID</dt>
+                <dd class="formInput-inner"><?php $this->param('email')?></dd>
+            </dl>
+            <dl class="formInput-box">
+                <dt class="formInput-title">パスワード</dt>
+                <dd class="formInput-inner">セキュリティの都合上、非表示</dd>
+            </dl>
+            <dl class="formInput-box">
+                <dt class="formInput-title">生年月日</dt>
+                <dd class="formInput-inner"><?php $this->selectedOption('birthdayYear')?>/
+                        <?php $this->selectedOption('birthdayMonthOfYear')?>/
+                        <?php $this->selectedOption('birthdayDayOfMonth')?></dd>
+            </dl>
+            <dl class="formInput-box">
+                <dt class="formInput-title">性別</dt>
+                <dd class="formInput-inner"><?php $this->selectedOption('gender')?></dd>
+            </dl>
+        </div>
+
+        <div class="btn-area">
+            <button class="btn btn-default" type="submit" name="submit" value="edit">修正する</button>
+            <button class="btn btn-default" type="submit" name="submit" value="save">登録を確定する</button>
+        </div>
+        <?php $this->secureToken()?>
+    </form>
+</div>

@@ -1,0 +1,9 @@
+<footer id="footer">
+    <?php if (Sing_Configure::read('display_dump_variable')):?>
+    <div id="var-dump">
+        <?php Zend_Debug::dump($_COOKIE)?>
+        <?php Zend_Debug::dump($_REQUEST)?>
+        <?php Zend_Debug::dump($_SESSION)?>
+    </div>
+    <?php endif;?>
+</footer>

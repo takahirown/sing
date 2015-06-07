@@ -1,0 +1,106 @@
+<?php $this->notices()?>
+<div id="main" role="main">
+    <h3 class="page-header">Ex04.会員登録フォーム・サンプル</h3>
+    <p>ここでは入力・確認・完了と遷移する伝統的なフォームのサンプルプログラムとして、会員登録フォームを実装します。実装要件として、入力データチェック、
+    CSRF対策、DBへのデータ登録を実装します。テーブルは下記テーブルを用意してください。</p>
+
+    <span>例1 m_accountテーブル</span><br>
+    <div class="highlight">
+        <code><span style="color: #000000">
+        <span style="color: #0000CC">create table m_account (
+        <br />&nbsp;&nbsp;&nbsp;&nbsp;id INT not null AUTO_INCREMENT comment 'ID'&nbsp;,
+        <br />&nbsp;&nbsp;&nbsp;&nbsp;name VARCHAR(255) not null comment 'アカウント名'&nbsp;,
+        <br />&nbsp;&nbsp;&nbsp;&nbsp;password CHAR(40) not null comment 'パスワード'&nbsp;,
+        <br />&nbsp;&nbsp;&nbsp;&nbsp;birthday_date DATETIME not null comment '生年月日'&nbsp;,
+        <br />&nbsp;&nbsp;&nbsp;&nbsp;gender TINYINT not null comment '性別	 0:女性　1:男性'&nbsp;,
+        <br />&nbsp;&nbsp;&nbsp;&nbsp;constraint m_account_PKC primary key (id)
+        <br />) comment 'アカウントマスタ' ENGINE=InnoDB;
+        <br /></span>
+        </span>
+        </code>
+    </div>
+
+    <br />
+
+    <form class="form-horizontal" method="post" action="/signup/" role="form">
+
+        <h1 class="page-header">会員登録</h1>
+
+        <h4 id="grid-intro">IDとパスワード</h4>
+        <p>
+            <span>IDに使用する主要メールアドレスを入力してください。これはアカウントに関する連絡先メールアドレスとして使用されます。</span><br />
+            <span>パスワードは6文字から12文字の半角英数字と記号(- . _)が利用できます。</span>
+        </p>
+        <div class="blank"></div>
+
+        <div class="form-group">
+            <label class="col-sm-3 control-label" for="email">ID <span class="label label-danger">必須</span></label>
+            <div class="col-sm-5">
+                <input id="email" class="form-control" type="text" autocomplete="off" value="<?php $this->param('email', SG_ESCAPE)?>" name="email" placeholder="aaa@bbb.com">
+                <?php $this->error('email')?>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label" for="pwd">パスワード <span class="label label-danger">必須</span></label>
+            <div class="col-sm-4">
+                <input id="pwd" class="form-control" type="password" autocomplete="off" value="<?php $this->param('password')?>" name="password">
+                <?php $this->error('password')?>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label" for="c-pwd">パスワード確認 <span class="label label-danger">必須</span></label>
+            <div class="col-sm-4">
+                <input id="c-pwd" class="form-control" type="password" autocomplete="off" value="<?php $this->param('confirmedPassword')?>" name="confirmedPassword">
+                <?php $this->error('confirmedPassword')?>
+            </div>
+        </div>
+
+        <h4 id="grid-intro">お客様情報</h4>
+        <p>
+            <span>パスワードを忘れたりリセットする必要がある場合に本人確認に使用されます。</span>
+        </p>
+        <div class="blank"></div>
+
+
+        <div class="form-group">
+            <label class="col-sm-3 control-label" for="dob-year">生年月日 <span class="label label-danger">必須</span></label>
+            <div class="col-sm-9 form-inline">
+                <select id="dob-year" name="birthdayYear" class="form-control">
+                    <option value="">年</option>
+                    <?php $this->multiOptions('birthdayYear', SG_SELECTBOX, null, SG_DESC)?>
+                </select>
+                <select id="dob-mon" name="birthdayMonthOfYear" class="form-control">
+                    <option value="">月</option>
+                    <?php $this->multiOptions('birthdayMonthOfYear', SG_SELECTBOX)?>
+                </select>
+                <select id="dob-day" name="birthdayDayOfMonth" class="form-control">
+                    <option value="">日</option>
+                    <?php $this->multiOptions('birthdayDayOfMonth', SG_SELECTBOX)?>
+                </select>
+                <?php $this->error('dob')?>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label" for="gender">性別 <span class="label label-danger">必須</span></label>
+            <div class="col-sm-3">
+                <select id="gender" name="gender" class="form-control">
+                    <option value="">選択してください</option>
+                    <?php $this->multiOptions('gender', SG_SELECTBOX)?>
+                </select>
+                <?php $this->error('gender')?>
+            </div>
+        </div>
+
+
+        <div class="blank"></div>
+        <p>※<a href="/terms/" target="_blank">利用規約</a>を確認のうえ、「利用規約に同意して登録する」ボタンを押してください。</p>
+
+        <div class="btn-area">
+            <button class="btn btn-default" type="submit" name="submit" value="back">用例に戻る</button>
+            <button class="btn btn-default" type="submit" name="submit" value="confirm">利用規約に同意して登録する</button>
+        </div>
+        <?php $this->secureToken()?>
+    </form>
+
+</div>
+

@@ -1,0 +1,48 @@
+<?php $this->notices()?>
+<div id="main" role="main">
+    <h3 class="page-header">Ex03.プラグインの実行順</h3>
+
+    <p>コントローラとプラグインのメソッドの呼び出し順は下記の通り。</p>
+
+    <ol>
+        <li>Zend_Controller_Plugin_Abstract::routeStartup()</li>
+        <li>Zend_Controller_Plugin_Abstract::routeShutdown()</li>
+        <li>Zend_Controller_Plugin_Abstract::dispatchLoopStartup()</li>
+        <li>Zend_Controller_Plugin_Abstract::preDispatch()</li>
+        <li>Zend_Controller_Action::init()</li>
+        <li>Zend_Controller_Action::preDispatch()</li>
+        <li>※コントローラ処理</li>
+        <li>Zend_Controller_Action::postDispatch()</li>
+        <li>Zend_Controller_Plugin_Abstract::postDispatch()</li>
+        <li>Zend_Controller_Plugin_Abstract::dispatchLoopShutdown()</li>
+        <li>Zend_Controller_Plugin_Abstract::__destruct()</li>
+    </ol>
+
+    <p>コントローラの処理内でリダイレクトをした際の呼び出し順は下記の通り。</p>
+
+    <ol>
+        <li>Zend_Controller_Plugin_Abstract::routeStartup()</li>
+        <li>Zend_Controller_Plugin_Abstract::routeShutdown()</li>
+        <li>Zend_Controller_Plugin_Abstract::dispatchLoopStartup()</li>
+        <li>Zend_Controller_Plugin_Abstract::preDispatch()</li>
+        <li>Zend_Controller_Action::init()</li>
+        <li>Zend_Controller_Action::preDispatch()</li>
+        <li>※コントローラ処理（リダイレクト処理）</li>
+        <li>Zend_Controller_Plugin_Abstract::__destruct()</li>
+        <li>Zend_Controller_Plugin_Abstract::routeStartup()</li>
+        <li>Zend_Controller_Plugin_Abstract::routeShutdown()</li>
+        <li>Zend_Controller_Plugin_Abstract::dispatchLoopStartup()</li>
+        <li>Zend_Controller_Plugin_Abstract::preDispatch()</li>
+        <li>Zend_Controller_Action::init()</li>
+        <li>Zend_Controller_Action::preDispatch()</li>
+        <li>※コントローラ処理</li>
+        <li>Zend_Controller_Action::postDispatch()</li>
+        <li>Zend_Controller_Plugin_Abstract::postDispatch()</li>
+        <li>Zend_Controller_Plugin_Abstract::dispatchLoopShutdown()</li>
+        <li>Zend_Controller_Plugin_Abstract::__destruct()</li>
+    </ol>
+
+    <div class="btn-area">
+        <a href="/example/" class="btn btn-default">用例に戻る</a>
+    </div>
+</div>
